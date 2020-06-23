@@ -3,15 +3,22 @@ import { StyleSheet, Image } from "react-native";
 import Matter from "matter-js";
 import { GAME_WIDTH, GAME_HEIGHT } from "../constants";
 
+type KnockedArrowProps = {
+  body: Matter.Body;
+};
+
 type TargetProps = {
   body: Matter.Body;
 };
 
-export function Arrow() {
+export function KnockedArrow(props: KnockedArrowProps) {
+  let x = props.body.position.x - 100;
+  let y = props.body.position.y - 20;
+
   return (
     <Image
       source={require("../../assets/Arrow.png")}
-      style={[styles.arrow, { left: 100, top: GAME_HEIGHT / 2 - 20 }]}
+      style={[styles.knockedArrow, { left: x, top: y }]}
     />
   );
 }
@@ -39,7 +46,7 @@ export function Target(props: TargetProps) {
 }
 
 const styles = StyleSheet.create({
-  arrow: {
+  knockedArrow: {
     width: 200,
     height: 40,
     position: "absolute",
