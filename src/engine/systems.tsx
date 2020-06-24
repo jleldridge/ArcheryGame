@@ -1,23 +1,22 @@
 import Matter from "matter-js";
 import * as constants from "../constants";
 import { Arrow } from "./renderers";
+import { GameEngineUpdateEventOptionType } from "react-native-game-engine";
 
-const Physics = (
-  entities: any,
-  { touches, time }: { touches: any; time: any }
-) => {
+const Physics = (entities: any, loop: GameEngineUpdateEventOptionType) => {
   let {
     engine,
     world,
   }: { engine: Matter.Engine; world: Matter.World } = entities.physics;
-
+  const { time } = loop;
   Matter.Engine.update(engine, time.delta);
   // world.bodies.forEach((body) => {});
 
   return entities;
 };
 
-const KnockArrow = (entities: any, { touches }: { touches: any }) => {
+const KnockArrow = (entities: any, loop: GameEngineUpdateEventOptionType) => {
+  const { touches } = loop;
   let bowState = entities["bowState"];
   let knockedArrow = entities["knockedArrow"];
 
@@ -36,9 +35,14 @@ const KnockArrow = (entities: any, { touches }: { touches: any }) => {
           200,
           40
         );
+        arrow.label = `arrow${entities.arrowCount++}`;
         Matter.World.add(world, arrow);
 
-        entities["arrow"] = { body: arrow, visible: true, renderer: Arrow };
+        entities[arrow.label] = {
+          body: arrow,
+          visible: true,
+          renderer: Arrow,
+        };
         const forceX = Math.min(0.01 * Math.abs(bowState.dx), 1);
         Matter.Body.applyForce(arrow, arrow.position, { x: forceX, y: 0 });
       }
@@ -47,7 +51,7 @@ const KnockArrow = (entities: any, { touches }: { touches: any }) => {
       bowState.touched = false;
     } else {
       const drag = touches.find((t: any) => t.type === "move");
-      if (knockedArrow && drag) {
+      if (knockedArrow && drag && drag.delta) {
         knockedArrow.position.x =
           knockedArrow.position.x + drag.delta.pageX * constants.GAME_SCALE;
         if (knockedArrow.position.x < 50) {

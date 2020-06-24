@@ -20,6 +20,7 @@ export default function Game() {
   Matter.World.add(world, target);
 
   let entities = {
+    arrowCount: 0,
     bowState: { touched: false, dx: 0, dy: 0 },
     physics: { engine, world },
     bow: { renderer: Bow },
