@@ -4,7 +4,12 @@ import { GameEngine } from "react-native-game-engine";
 import Matter from "matter-js";
 import { Bow, KnockedArrow, Target } from "./engine/renderers";
 import { Physics, KnockArrow } from "./engine/systems";
-import { GAME_WIDTH, GAME_HEIGHT, KNOCKED_ARROW_ANCHOR } from "./constants";
+import {
+  GAME_WIDTH,
+  GAME_HEIGHT,
+  KNOCKED_ARROW_ANCHOR_X,
+  KNOCKED_ARROW_ANCHOR_Y,
+} from "./constants";
 
 export default function Game() {
   console.log("Rendering Game...");
@@ -25,7 +30,7 @@ export default function Game() {
     physics: { engine, world },
     bow: { renderer: Bow },
     knockedArrow: {
-      position: { x: KNOCKED_ARROW_ANCHOR.X, y: KNOCKED_ARROW_ANCHOR.Y },
+      position: { x: KNOCKED_ARROW_ANCHOR_X, y: KNOCKED_ARROW_ANCHOR_Y },
       renderer: KnockedArrow,
     },
     target: { body: target, renderer: Target },

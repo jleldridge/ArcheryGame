@@ -8,7 +8,7 @@ type KnockedArrowProps = {
   visible: boolean;
 };
 
-type arrowProps = {
+type ArrowProps = {
   body: Matter.Body;
   visible: boolean;
 };
@@ -31,7 +31,7 @@ export function KnockedArrow(props: KnockedArrowProps) {
   );
 }
 
-export function Arrow(props: arrowProps) {
+export function Arrow(props: ArrowProps) {
   let x = props.body.position.x - 100;
   let y = props.body.position.y - 20;
 
