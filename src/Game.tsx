@@ -11,13 +11,16 @@ export default function Game() {
   let engine = Matter.Engine.create({ enableSleeping: false });
   let world = engine.world;
   world.gravity.y = 0;
+  world.bounds.min = { x: 0, y: 0 };
+  world.bounds.max = { x: GAME_WIDTH, y: GAME_HEIGHT };
 
   let target = Matter.Bodies.circle(GAME_WIDTH - 100, GAME_HEIGHT / 2, 50);
+  target.label = "target";
 
   Matter.World.add(world, target);
 
   let entities = {
-    bowState: { touched: false },
+    bowState: { touched: false, dx: 0, dy: 0 },
     physics: { engine, world },
     bow: { renderer: Bow },
     knockedArrow: {

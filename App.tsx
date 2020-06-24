@@ -33,5 +33,6 @@ const styles = StyleSheet.create({
     height: GAME_HEIGHT,
     transform: [{ scale: GAME_SCALE }],
     backgroundColor: "#7ED7DF",
+    overflow: "hidden",
   },
 });
