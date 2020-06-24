@@ -1,6 +1,6 @@
 import Matter from "matter-js";
 import * as constants from "../constants";
-import { Arrow } from "./renderers";
+import * as factory from "./factory";
 import { GameEngineUpdateEventOptionType } from "react-native-game-engine";
 
 export const Physics = (
@@ -46,22 +46,7 @@ export const KnockArrow = (
       knockedArrow.position.y = constants.KNOCKED_ARROW_ANCHOR_Y;
 
       if (bowState.dx < 0) {
-        let arrow = Matter.Bodies.rectangle(
-          knockedArrow.position.x,
-          knockedArrow.position.y,
-          200,
-          40
-        );
-        arrow.label = `arrow${entities.arrowSuffix++}`;
-        arrow.frictionAir = 0;
-        Matter.World.add(world, arrow);
-
-        entities[arrow.label] = {
-          body: arrow,
-          visible: true,
-          renderer: Arrow,
-        };
-
+        let arrow = factory.arrow(entities);
         const forceX =
           Math.abs(bowState.dx / constants.MAX_ARROW_PULL_DISTANCE) *
           constants.MAX_ARROW_FORCE;
