@@ -4,7 +4,13 @@ import Matter from "matter-js";
 import { GAME_WIDTH, GAME_HEIGHT } from "../constants";
 
 type KnockedArrowProps = {
+  position: { x: number; y: number };
+  visible: boolean;
+};
+
+type arrowProps = {
   body: Matter.Body;
+  visible: boolean;
 };
 
 type TargetProps = {
@@ -12,14 +18,30 @@ type TargetProps = {
 };
 
 export function KnockedArrow(props: KnockedArrowProps) {
+  let x = props.position.x - 100;
+  let y = props.position.y - 20;
+
+  return props.visible ? (
+    <Image
+      source={require("../../assets/Arrow.png")}
+      style={[styles.arrow, { left: x, top: y }]}
+    />
+  ) : (
+    <></>
+  );
+}
+
+export function Arrow(props: arrowProps) {
   let x = props.body.position.x - 100;
   let y = props.body.position.y - 20;
 
-  return (
+  return props.visible ? (
     <Image
       source={require("../../assets/Arrow.png")}
-      style={[styles.knockedArrow, { left: x, top: y }]}
+      style={[styles.arrow, { left: x, top: y }]}
     />
+  ) : (
+    <></>
   );
 }
 
@@ -46,7 +68,7 @@ export function Target(props: TargetProps) {
 }
 
 const styles = StyleSheet.create({
-  knockedArrow: {
+  arrow: {
     width: 200,
     height: 40,
     position: "absolute",

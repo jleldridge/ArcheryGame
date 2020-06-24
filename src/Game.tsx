@@ -13,22 +13,15 @@ export default function Game() {
   world.gravity.y = 0;
 
   let target = Matter.Bodies.circle(GAME_WIDTH - 100, GAME_HEIGHT / 2, 50);
-  let arrow = Matter.Bodies.rectangle(
-    KNOCKED_ARROW_ANCHOR.X,
-    KNOCKED_ARROW_ANCHOR.Y,
-    200,
-    40
-  );
 
   Matter.World.add(world, target);
-  Matter.World.add(world, arrow);
 
   let entities = {
     bowState: { touched: false },
     physics: { engine, world },
     bow: { renderer: Bow },
     knockedArrow: {
-      body: arrow,
+      position: { x: KNOCKED_ARROW_ANCHOR.X, y: KNOCKED_ARROW_ANCHOR.Y },
       renderer: KnockedArrow,
     },
     target: { body: target, renderer: Target },
