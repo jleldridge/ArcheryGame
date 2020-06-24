@@ -1,7 +1,7 @@
 import { Dimensions } from "react-native";
 
-export const SCREEN_WIDTH = Dimensions.get("screen").width;
-export const SCREEN_HEIGHT = Dimensions.get("screen").height;
+export const SCREEN_WIDTH = Dimensions.get("window").width;
+export const SCREEN_HEIGHT = Dimensions.get("window").height;
 export const GAME_WIDTH = 1024;
 export const GAME_HEIGHT = 576;
 const X_SCALE = SCREEN_WIDTH / GAME_WIDTH;
