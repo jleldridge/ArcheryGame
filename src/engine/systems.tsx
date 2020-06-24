@@ -10,7 +10,18 @@ const Physics = (entities: any, loop: GameEngineUpdateEventOptionType) => {
   }: { engine: Matter.Engine; world: Matter.World } = entities.physics;
   const { time } = loop;
   Matter.Engine.update(engine, time.delta);
-  // world.bodies.forEach((body) => {});
+
+  let bodiesToRemove: Matter.Body[] = [];
+  world.bodies.forEach((body) => {
+    if (!Matter.Bounds.overlaps(world.bounds, body.bounds)) {
+      bodiesToRemove.push(body);
+    }
+  });
+
+  bodiesToRemove.forEach((body) => {
+    Matter.World.remove(world, body);
+    delete entities[body.label];
+  });
 
   return entities;
 };
@@ -35,7 +46,7 @@ const KnockArrow = (entities: any, loop: GameEngineUpdateEventOptionType) => {
           200,
           40
         );
-        arrow.label = `arrow${entities.arrowCount++}`;
+        arrow.label = `arrow${entities.arrowSuffix++}`;
         Matter.World.add(world, arrow);
 
         entities[arrow.label] = {
