@@ -10,7 +10,7 @@ export function arrow(entities: any): Matter.Body {
     200,
     40
   );
-  arrow.label = `arrow${entities.arrowSuffix++}`;
+  arrow.label = `arrow${entities.entitySuffix++}`;
   arrow.frictionAir = 0;
   Matter.World.add(physics.world, arrow);
 
@@ -21,6 +21,12 @@ export function arrow(entities: any): Matter.Body {
   };
 
   return arrow;
+}
+
+export function destroy(entities: any, body: Matter.Body) {
+  const world = entities.physics.world;
+  Matter.World.remove(world, body);
+  delete entities[body.label];
 }
 
 export function target() {}

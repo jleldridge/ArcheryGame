@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleSheet, StatusBar } from "react-native";
 import { GameEngine } from "react-native-game-engine";
-import Matter from "matter-js";
+import Matter, { World } from "matter-js";
 import { Bow, KnockedArrow, Target } from "./engine/renderers";
 import { Physics, KnockArrow } from "./engine/systems";
 import {
@@ -10,11 +10,14 @@ import {
   KNOCKED_ARROW_ANCHOR_X,
   KNOCKED_ARROW_ANCHOR_Y,
 } from "./constants";
+import { attachMatterEvents } from "./engine/events";
 
 export default function Game() {
   console.log("Rendering Game...");
   let engine = Matter.Engine.create({ enableSleeping: false });
   let world = engine.world;
+  attachMatterEvents(engine);
+
   world.gravity.y = 0;
   world.bounds.min = { x: 0, y: 0 };
   world.bounds.max = { x: GAME_WIDTH, y: GAME_HEIGHT };
@@ -25,7 +28,7 @@ export default function Game() {
   Matter.World.add(world, target);
 
   let entities = {
-    arrowSuffix: 0,
+    entitySuffix: 0,
     bowState: { touched: false, dx: 0, dy: 0 },
     physics: { engine, world },
     bow: { renderer: Bow },

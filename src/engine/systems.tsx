@@ -15,15 +15,21 @@ export const Physics = (
   Matter.Engine.update(engine, time.delta);
 
   let bodiesToRemove: Matter.Body[] = [];
-  world.bodies.forEach((body) => {
-    if (!Matter.Bounds.overlaps(world.bounds, body.bounds)) {
-      bodiesToRemove.push(body);
-    }
-  });
+
+  // remove entities with bodies that have been removed from the physics engine
+  Object.values<any>(entities)
+    .filter((v) => v.body)
+    .forEach((v) => {
+      if (
+        !Matter.Bounds.overlaps(world.bounds, v.body.bounds) ||
+        !Matter.Composite.get(world, v.body.id, v.body.type)
+      ) {
+        bodiesToRemove.push(v.body);
+      }
+    });
 
   bodiesToRemove.forEach((body) => {
-    Matter.World.remove(world, body);
-    delete entities[body.label];
+    factory.destroy(entities, body);
   });
 
   return entities;
