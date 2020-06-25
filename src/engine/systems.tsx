@@ -2,6 +2,7 @@ import Matter from "matter-js";
 import * as constants from "../constants";
 import * as factory from "./factory";
 import { GameEngineUpdateEventOptionType } from "react-native-game-engine";
+import { toGameCoordinates, getBowRotation, getBowDrawDistance } from "./util";
 
 export const Physics = (
   entities: any,
@@ -41,43 +42,58 @@ export const KnockArrow = (
 ) => {
   const { touches } = loop;
   let bowState = entities["bowState"];
-  let knockedArrow = entities["knockedArrow"];
+  let bow = entities["bow"];
 
   if (bowState.touched) {
     const release = touches.find((t: any) => t.type === "end");
     if (release) {
       const world = entities.physics.world;
-      knockedArrow.visible = false;
-      knockedArrow.position.x = constants.KNOCKED_ARROW_ANCHOR_X;
-      knockedArrow.position.y = constants.KNOCKED_ARROW_ANCHOR_Y;
+      bow.arrowVisible = false;
+      bow.drawDistance = 0;
 
       if (bowState.dx < 0) {
         let arrow = factory.arrow(entities);
         const forceX =
-          Math.abs(bowState.dx / constants.MAX_ARROW_PULL_DISTANCE) *
+          Math.abs(bowState.drawDistance / constants.MAX_ARROW_PULL_DISTANCE) *
           constants.MAX_ARROW_FORCE;
         Matter.Body.applyForce(arrow, arrow.position, { x: forceX, y: 0 });
       }
-      bowState.dx = 0;
-      bowState.dy = 0;
+      bowState.rotation = 0;
       bowState.touched = false;
+      bowState.downPoint = null;
+      bow.rotation = 0;
     } else {
-      const drag = touches.find((t: any) => t.type === "move");
-      if (knockedArrow && drag && drag.delta) {
-        knockedArrow.position.x =
-          knockedArrow.position.x + drag.delta.pageX * constants.GAME_SCALE;
-        if (knockedArrow.position.x < constants.MIN_KNOCKED_ARROW_X) {
-          knockedArrow.position.x = constants.MIN_KNOCKED_ARROW_X;
-        } else if (knockedArrow.position.x > constants.KNOCKED_ARROW_ANCHOR_X) {
-          knockedArrow.position.x = constants.KNOCKED_ARROW_ANCHOR_X;
-        }
-        bowState.dx =
-          knockedArrow.position.x - constants.KNOCKED_ARROW_ANCHOR_X;
+      const dragTouch = touches.find((t: any) => t.type === "move");
+      if (dragTouch) {
+        const dragPoint = toGameCoordinates({
+          x: dragTouch.event.pageX,
+          y: dragTouch.event.pageY,
+        });
+
+        bowState.rotation = getBowRotation(dragPoint);
+        bowState.drawDistance = getBowDrawDistance(
+          bowState.downPoint,
+          dragPoint
+        );
+
+        bow.rotation = bowState.rotation;
+        bow.drawDistance = bowState.drawDistance;
+        entities.debug.dragPoint = dragPoint;
       }
     }
-  } else if (touches.find((t: any) => t.type === "start")) {
-    bowState.touched = true;
-    knockedArrow.visible = true;
+  } else {
+    const touch = touches.find((t: any) => t.type === "start");
+    if (touch) {
+      bowState.touched = true;
+      bowState.downPoint = toGameCoordinates({
+        x: touch.event.pageX,
+        y: touch.event.pageY,
+      });
+      bowState.rotation = getBowRotation(bowState.downPoint);
+      bow.rotation = bowState.rotation;
+      bow.arrowVisible = true;
+      entities.debug.touchDown = bowState.downPoint;
+    }
   }
 
   return entities;

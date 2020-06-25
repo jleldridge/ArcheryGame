@@ -2,18 +2,20 @@ import React from "react";
 import { StyleSheet, StatusBar } from "react-native";
 import { GameEngine } from "react-native-game-engine";
 import Matter, { World } from "matter-js";
-import { Bow, KnockedArrow, Target } from "./engine/renderers";
+import { Bow, Target, DebugInfo } from "./engine/renderers";
 import { Physics, KnockArrow } from "./engine/systems";
 import {
   GAME_WIDTH,
   GAME_HEIGHT,
-  KNOCKED_ARROW_ANCHOR_X,
-  KNOCKED_ARROW_ANCHOR_Y,
+  BOW_ANCHOR_X,
+  BOW_ANCHOR_Y,
+  GAME_OFFSET_X,
+  GAME_OFFSET_Y,
 } from "./constants";
 import { attachMatterEvents } from "./engine/events";
 
 export default function Game() {
-  console.log("Rendering Game...");
+  console.log("Rendering Game...", GAME_OFFSET_X, GAME_OFFSET_Y);
   let engine = Matter.Engine.create({ enableSleeping: false });
   let world = engine.world;
   attachMatterEvents(engine);
@@ -29,14 +31,17 @@ export default function Game() {
 
   let entities = {
     entitySuffix: 0,
-    bowState: { touched: false, dx: 0, dy: 0 },
+    bowState: { touched: false, drawDistance: 0, rotation: 0 },
     physics: { engine, world },
-    bow: { renderer: Bow },
-    knockedArrow: {
-      position: { x: KNOCKED_ARROW_ANCHOR_X, y: KNOCKED_ARROW_ANCHOR_Y },
-      renderer: KnockedArrow,
+    bow: {
+      rotation: 0,
+      drawDistance: 0,
+      arrowVisible: false,
+      position: { x: BOW_ANCHOR_X, y: BOW_ANCHOR_Y },
+      renderer: Bow,
     },
     target: { body: target, renderer: Target },
+    debug: { showDebug: true, renderer: DebugInfo },
   };
 
   return (
