@@ -98,7 +98,6 @@ export function Target(props: TargetProps) {
 
 export function DebugInfo(props: DebugProps) {
   if (!props.showDebug) return <></>;
-  console.log(props.dragPoint);
 
   return (
     <View
