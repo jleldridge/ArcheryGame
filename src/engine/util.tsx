@@ -40,3 +40,16 @@ export function getBowRotation(dragPoint: point): number {
 
   return rotation;
 }
+
+export function getArrowForceVector(
+  drawDistance: number,
+  rotation: number
+): point {
+  const force =
+    Math.abs(drawDistance / constants.MAX_ARROW_PULL_DISTANCE) *
+    constants.MAX_ARROW_FORCE;
+  const x = Math.cos(rotation) * force;
+  const y = Math.sin(rotation) * force;
+
+  return { x, y };
+}

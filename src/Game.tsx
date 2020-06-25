@@ -9,13 +9,11 @@ import {
   GAME_HEIGHT,
   BOW_ANCHOR_X,
   BOW_ANCHOR_Y,
-  GAME_OFFSET_X,
-  GAME_OFFSET_Y,
 } from "./constants";
 import { attachMatterEvents } from "./engine/events";
 
 export default function Game() {
-  console.log("Rendering Game...", GAME_OFFSET_X, GAME_OFFSET_Y);
+  console.log("Rendering Game...");
   let engine = Matter.Engine.create({ enableSleeping: false });
   let world = engine.world;
   attachMatterEvents(engine);
@@ -41,7 +39,7 @@ export default function Game() {
       renderer: Bow,
     },
     target: { body: target, renderer: Target },
-    debug: { showDebug: true, renderer: DebugInfo },
+    debug: { showDebug: false, renderer: DebugInfo },
   };
 
   return (

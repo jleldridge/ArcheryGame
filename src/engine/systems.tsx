@@ -2,7 +2,12 @@ import Matter from "matter-js";
 import * as constants from "../constants";
 import * as factory from "./factory";
 import { GameEngineUpdateEventOptionType } from "react-native-game-engine";
-import { toGameCoordinates, getBowRotation, getBowDrawDistance } from "./util";
+import {
+  toGameCoordinates,
+  getBowRotation,
+  getBowDrawDistance,
+  getArrowForceVector,
+} from "./util";
 
 export const Physics = (
   entities: any,
@@ -47,21 +52,23 @@ export const KnockArrow = (
   if (bowState.touched) {
     const release = touches.find((t: any) => t.type === "end");
     if (release) {
-      const world = entities.physics.world;
       bow.arrowVisible = false;
-      bow.drawDistance = 0;
 
-      if (bowState.dx < 0) {
+      if (bowState.drawDistance < 0) {
         let arrow = factory.arrow(entities);
-        const forceX =
-          Math.abs(bowState.drawDistance / constants.MAX_ARROW_PULL_DISTANCE) *
-          constants.MAX_ARROW_FORCE;
-        Matter.Body.applyForce(arrow, arrow.position, { x: forceX, y: 0 });
+        Matter.Body.rotate(arrow, bowState.rotation);
+
+        Matter.Body.applyForce(
+          arrow,
+          arrow.position,
+          getArrowForceVector(bowState.drawDistance, bowState.rotation)
+        );
       }
       bowState.rotation = 0;
       bowState.touched = false;
       bowState.downPoint = null;
       bow.rotation = 0;
+      bow.drawDistance = 0;
     } else {
       const dragTouch = touches.find((t: any) => t.type === "move");
       if (dragTouch) {

@@ -39,7 +39,10 @@ export function Arrow(props: ArrowProps) {
   return props.visible ? (
     <Image
       source={require("../../assets/Arrow.png")}
-      style={[styles.arrow, { left: x, top: y }]}
+      style={[
+        styles.arrow,
+        { left: x, top: y, transform: [{ rotateZ: `${props.body.angle}rad` }] },
+      ]}
     />
   ) : (
     <></>
