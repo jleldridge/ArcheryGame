@@ -1,5 +1,6 @@
-import { GameEngine } from "react-native-game-engine";
 import Matter from "matter-js";
+import * as ScreenOrientation from "expo-screen-orientation";
+import { Dimensions } from "react-native";
 
 export function attachMatterEvents(engine: Matter.Engine) {
   Matter.Events.on(
@@ -22,6 +23,16 @@ export function attachMatterEvents(engine: Matter.Engine) {
           Matter.World.remove(engine.world, target);
         }
       });
+    }
+  );
+}
+
+export function attachOrientationEvents() {
+  ScreenOrientation.addOrientationChangeListener(
+    async (e: ScreenOrientation.OrientationChangeEvent) => {
+      const orientation = await ScreenOrientation.getOrientationAsync();
+      console.log(orientation);
+      console.log(Dimensions.get("window").height);
     }
   );
 }
