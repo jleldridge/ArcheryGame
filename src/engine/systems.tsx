@@ -46,29 +46,26 @@ export const KnockArrow = (
   loop: GameEngineUpdateEventOptionType
 ) => {
   const { touches } = loop;
-  let bowState = entities["bowState"];
   let bow = entities["bow"];
 
-  if (bowState.touched) {
+  if (bow.touched) {
     const release = touches.find((t: any) => t.type === "end");
     if (release) {
       bow.arrowVisible = false;
 
-      if (bowState.drawDistance < 0) {
+      if (bow.drawDistance < 0) {
         let arrow = factory.arrow(entities);
-        Matter.Body.rotate(arrow, bowState.rotation);
+        Matter.Body.rotate(arrow, bow.rotation);
 
         Matter.Body.applyForce(
           arrow,
           arrow.position,
-          getArrowForceVector(bowState.drawDistance, bowState.rotation)
+          getArrowForceVector(bow.drawDistance, bow.rotation)
         );
       }
-      bowState.rotation = 0;
-      bowState.touched = false;
-      bowState.downPoint = null;
       bow.rotation = 0;
-      bow.drawDistance = 0;
+      bow.touched = false;
+      bow.downPoint = null;
     } else {
       const dragTouch = touches.find((t: any) => t.type === "move");
       if (dragTouch) {
@@ -77,29 +74,23 @@ export const KnockArrow = (
           y: dragTouch.event.pageY,
         });
 
-        bowState.rotation = getBowRotation(dragPoint);
-        bowState.drawDistance = getBowDrawDistance(
-          bowState.downPoint,
-          dragPoint
-        );
+        bow.rotation = getBowRotation(dragPoint);
+        bow.drawDistance = getBowDrawDistance(bow.downPoint, dragPoint);
 
-        bow.rotation = bowState.rotation;
-        bow.drawDistance = bowState.drawDistance;
         entities.debug.dragPoint = dragPoint;
       }
     }
   } else {
     const touch = touches.find((t: any) => t.type === "start");
     if (touch) {
-      bowState.touched = true;
-      bowState.downPoint = toGameCoordinates({
+      bow.touched = true;
+      bow.downPoint = toGameCoordinates({
         x: touch.event.pageX,
         y: touch.event.pageY,
       });
-      bowState.rotation = getBowRotation(bowState.downPoint);
-      bow.rotation = bowState.rotation;
+      bow.rotation = getBowRotation(bow.downPoint);
       bow.arrowVisible = true;
-      entities.debug.touchDown = bowState.downPoint;
+      entities.debug.touchDown = bow.downPoint;
     }
   }
 

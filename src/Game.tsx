@@ -29,9 +29,10 @@ export default function Game() {
 
   let entities = {
     entitySuffix: 0,
-    bowState: { touched: false, drawDistance: 0, rotation: 0 },
     physics: { engine, world },
     bow: {
+      touched: false,
+      downPoint: null,
       rotation: 0,
       drawDistance: 0,
       arrowVisible: false,
