@@ -1,5 +1,4 @@
 import Matter from "matter-js";
-import * as constants from "../constants";
 import * as factory from "./factory";
 import { GameEngineUpdateEventOptionType } from "react-native-game-engine";
 import {
@@ -8,9 +7,10 @@ import {
   getBowDrawDistance,
   getArrowForceVector,
 } from "./util";
+import { GameEntities } from "../types";
 
 export const Physics = (
-  entities: any,
+  entities: GameEntities,
   loop: GameEngineUpdateEventOptionType
 ) => {
   let {
@@ -42,7 +42,7 @@ export const Physics = (
 };
 
 export const KnockArrow = (
-  entities: any,
+  entities: GameEntities,
   loop: GameEngineUpdateEventOptionType
 ) => {
   const { touches } = loop;
@@ -68,7 +68,7 @@ export const KnockArrow = (
       bow.downPoint = null;
     } else {
       const dragTouch = touches.find((t: any) => t.type === "move");
-      if (dragTouch) {
+      if (dragTouch && bow.downPoint) {
         const dragPoint = toGameCoordinates({
           x: dragTouch.event.pageX,
           y: dragTouch.event.pageY,

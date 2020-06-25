@@ -11,6 +11,7 @@ import {
   BOW_ANCHOR_Y,
 } from "./constants";
 import { attachMatterEvents } from "./engine/events";
+import { GameEntities } from "./types";
 
 export default function Game() {
   console.log("Rendering Game...");
@@ -27,7 +28,7 @@ export default function Game() {
 
   Matter.World.add(world, target);
 
-  let entities = {
+  let entities: GameEntities = {
     entitySuffix: 0,
     physics: { engine, world },
     bow: {

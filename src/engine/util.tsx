@@ -1,18 +1,14 @@
 import * as constants from "../constants";
+import { Point } from "../types";
 
-interface point {
-  x: number;
-  y: number;
-}
-
-export function toGameCoordinates(screenCoordinates: point): point {
+export function toGameCoordinates(screenCoordinates: Point): Point {
   return {
     x: (screenCoordinates.x - constants.GAME_OFFSET_X) / constants.GAME_SCALE,
     y: (screenCoordinates.y - constants.GAME_OFFSET_Y) / constants.GAME_SCALE,
   };
 }
 
-export function getBowDrawDistance(downPoint: point, dragPoint: point): number {
+export function getBowDrawDistance(downPoint: Point, dragPoint: Point): number {
   if (dragPoint.x - downPoint.x > 0) {
     return 0;
   }
@@ -27,7 +23,7 @@ export function getBowDrawDistance(downPoint: point, dragPoint: point): number {
   return drawDistance;
 }
 
-export function getBowRotation(dragPoint: point): number {
+export function getBowRotation(dragPoint: Point): number {
   let rotation = Math.atan(
     (dragPoint.y - constants.BOW_ANCHOR_Y) /
       (dragPoint.x - constants.BOW_ANCHOR_X)
@@ -44,7 +40,7 @@ export function getBowRotation(dragPoint: point): number {
 export function getArrowForceVector(
   drawDistance: number,
   rotation: number
-): point {
+): Point {
   const force =
     Math.abs(drawDistance / constants.MAX_ARROW_PULL_DISTANCE) *
     constants.MAX_ARROW_FORCE;
