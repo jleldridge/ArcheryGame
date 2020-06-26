@@ -13,6 +13,8 @@ import {
 import { attachMatterEvents } from "./engine/events";
 import { GameEntities } from "./types";
 
+const DEBUG = false;
+
 export default function Game() {
   console.log("Rendering Game...");
   let engine = Matter.Engine.create({ enableSleeping: false });
@@ -41,7 +43,7 @@ export default function Game() {
       renderer: Bow,
     },
     target: { body: target, renderer: Target },
-    debug: { showDebug: false, renderer: DebugInfo },
+    debug: { showDebug: DEBUG, renderer: DebugInfo },
   };
 
   return (

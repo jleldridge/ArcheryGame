@@ -23,15 +23,17 @@ export function getBowDrawDistance(downPoint: Point, dragPoint: Point): number {
   return drawDistance;
 }
 
-export function getBowRotation(dragPoint: Point): number {
+export function getBowRotation(downPoint: Point, dragPoint: Point): number {
   let rotation = Math.atan(
-    (dragPoint.y - constants.BOW_ANCHOR_Y) /
-      (dragPoint.x - constants.BOW_ANCHOR_X)
+    (dragPoint.y - downPoint.y) / (dragPoint.x - downPoint.x)
   );
-  if (rotation < -1 * constants.MAX_BOW_ROTATION_RADIANS) {
-    rotation = -1 * constants.MAX_BOW_ROTATION_RADIANS;
-  } else if (rotation > constants.MAX_BOW_ROTATION_RADIANS) {
-    rotation = constants.MAX_BOW_ROTATION_RADIANS;
+  const dx = dragPoint.x - downPoint.x;
+  const dy = dragPoint.y - downPoint.y;
+  if (dx > 0) {
+    rotation =
+      dy < 0
+        ? constants.MAX_BOW_ROTATION_RADIANS
+        : -1 * constants.MAX_BOW_ROTATION_RADIANS;
   }
 
   return rotation;

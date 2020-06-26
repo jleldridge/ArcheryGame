@@ -66,6 +66,7 @@ export const KnockArrow = (
       bow.rotation = 0;
       bow.touched = false;
       bow.downPoint = null;
+      bow.drawDistance = 0;
     } else {
       const dragTouch = touches.find((t: any) => t.type === "move");
       if (dragTouch && bow.downPoint) {
@@ -74,7 +75,7 @@ export const KnockArrow = (
           y: dragTouch.event.pageY,
         });
 
-        bow.rotation = getBowRotation(dragPoint);
+        bow.rotation = getBowRotation(bow.downPoint, dragPoint);
         bow.drawDistance = getBowDrawDistance(bow.downPoint, dragPoint);
 
         entities.debug.dragPoint = dragPoint;
@@ -88,7 +89,7 @@ export const KnockArrow = (
         x: touch.event.pageX,
         y: touch.event.pageY,
       });
-      bow.rotation = getBowRotation(bow.downPoint);
+      bow.rotation = 0;
       bow.arrowVisible = true;
       entities.debug.touchDown = bow.downPoint;
     }
