@@ -1,7 +1,7 @@
 import React from "react";
-import { StyleSheet, StatusBar } from "react-native";
+import { StyleSheet, StatusBar, Dimensions } from "react-native";
 import { GameEngine } from "react-native-game-engine";
-import Matter, { World } from "matter-js";
+import Matter from "matter-js";
 import { Bow, Target, DebugInfo } from "./engine/renderers";
 import { Physics, KnockArrow } from "./engine/systems";
 import {
@@ -10,8 +10,9 @@ import {
   BOW_ANCHOR_X,
   BOW_ANCHOR_Y,
 } from "./constants";
-import { attachMatterEvents } from "./engine/events";
+import { attachMatterEvents, attachOrientationEvents } from "./engine/events";
 import { GameEntities } from "./types";
+import { getScreenOrientation } from "./engine/util";
 
 const DEBUG = false;
 
@@ -20,6 +21,7 @@ export default function Game() {
   let engine = Matter.Engine.create({ enableSleeping: false });
   let world = engine.world;
   attachMatterEvents(engine);
+  attachOrientationEvents();
 
   world.gravity.y = 0;
   world.bounds.min = { x: 0, y: 0 };

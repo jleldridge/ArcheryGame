@@ -1,10 +1,19 @@
 import * as constants from "../constants";
-import { Point } from "../types";
+import { Point, ScreenOrientation } from "../types";
+import { Dimensions } from "react-native";
 
 export function toGameCoordinates(screenCoordinates: Point): Point {
+  const gameScale = getGameScale();
+  const orientation = getScreenOrientation();
+  const screenx =
+    orientation === "landscape"
+      ? screenCoordinates.x
+      : -1 * screenCoordinates.y;
+  const screeny =
+    orientation === "landscape" ? screenCoordinates.y : screenCoordinates.x;
   return {
-    x: (screenCoordinates.x - constants.GAME_OFFSET_X) / constants.GAME_SCALE,
-    y: (screenCoordinates.y - constants.GAME_OFFSET_Y) / constants.GAME_SCALE,
+    x: (screenx - getGameOffsetX()) / gameScale,
+    y: (screeny - getGameOffsetY()) / gameScale,
   };
 }
 
@@ -50,4 +59,44 @@ export function getArrowForceVector(
   const y = Math.sin(rotation) * force;
 
   return { x, y };
+}
+
+export function getScreenHeight(): number {
+  return Dimensions.get("window").height;
+}
+
+export function getScreenWidth(): number {
+  return Dimensions.get("window").width;
+}
+
+export function getGameScale(): number {
+  if (getScreenOrientation() === "landscape") {
+    const xScale = getScreenWidth() / constants.GAME_WIDTH;
+    const yScale = getScreenHeight() / constants.GAME_HEIGHT;
+    return Math.min(xScale, yScale);
+  } else {
+    const xScale = getScreenHeight() / constants.GAME_WIDTH;
+    const yScale = getScreenWidth() / constants.GAME_HEIGHT;
+    return Math.min(xScale, yScale);
+  }
+}
+
+export function getGameOffsetX(): number {
+  if (getScreenOrientation() === "landscape") {
+    return (getScreenWidth() - constants.GAME_WIDTH * getGameScale()) / 2;
+  } else {
+    return (getScreenHeight() - constants.GAME_WIDTH * getGameScale()) / 2;
+  }
+}
+
+export function getGameOffsetY(): number {
+  if (getScreenOrientation() === "landscape") {
+    return (getScreenHeight() - constants.GAME_HEIGHT * getGameScale()) / 2;
+  } else {
+    return (getScreenWidth() - constants.GAME_HEIGHT * getGameScale()) / 2;
+  }
+}
+
+export function getScreenOrientation(): ScreenOrientation {
+  return getScreenHeight() > getScreenWidth() ? "portrait" : "landscape";
 }
