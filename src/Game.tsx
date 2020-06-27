@@ -10,9 +10,8 @@ import {
   BOW_ANCHOR_X,
   BOW_ANCHOR_Y,
 } from "./constants";
-import { attachMatterEvents, attachOrientationEvents } from "./engine/events";
+import { attachMatterEvents } from "./engine/events";
 import { GameEntities } from "./types";
-import { getScreenOrientation } from "./engine/util";
 
 const DEBUG = false;
 
@@ -21,7 +20,6 @@ export default function Game() {
   let engine = Matter.Engine.create({ enableSleeping: false });
   let world = engine.world;
   attachMatterEvents(engine);
-  attachOrientationEvents();
 
   world.gravity.y = 0;
   world.bounds.min = { x: 0, y: 0 };

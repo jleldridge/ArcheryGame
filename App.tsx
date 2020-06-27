@@ -1,5 +1,6 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
+import { useDimensions } from "@react-native-community/hooks";
 import { GAME_WIDTH, GAME_HEIGHT } from "./src/constants";
 import Game from "./src/Game";
 import {
@@ -11,10 +12,12 @@ import {
 
 export default function App() {
   const screenOrientation = getScreenOrientation();
-  console.log(getGameScale(), getScreenWidth(), getScreenHeight());
+  const screen = useDimensions().screen;
 
   return (
-    <View style={styles.container}>
+    <View
+      style={[styles.container, { width: screen.width, height: screen.height }]}
+    >
       <View
         style={[
           styles.sceneContainer,
@@ -36,8 +39,6 @@ const styles = StyleSheet.create({
   container: {
     alignItems: "center",
     justifyContent: "center",
-    width: getScreenWidth(),
-    height: getScreenHeight(),
     backgroundColor: "black",
   },
 
