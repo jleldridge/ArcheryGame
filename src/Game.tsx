@@ -12,12 +12,12 @@ import {
 } from "./constants";
 import { attachMatterEvents, attachOrientationEvents } from "./engine/events";
 import { GameEntities } from "./types";
+import { getScreenOrientation } from "./engine/util";
 
 const DEBUG = false;
 
 export default function Game() {
   console.log("Rendering Game...");
-  console.log(Dimensions.get("window").height);
   let engine = Matter.Engine.create({ enableSleeping: false });
   let world = engine.world;
   attachMatterEvents(engine);
