@@ -31,7 +31,14 @@ export type Bow = {
 
 export type Target = {
   body: Matter.Body;
+  movePath: MovePath;
   renderer: any;
+};
+
+export type MovePath = {
+  waypoints: Point[];
+  speed: number;
+  index: number;
 };
 
 export type Point = {

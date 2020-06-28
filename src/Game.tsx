@@ -3,7 +3,7 @@ import { StyleSheet, StatusBar, Dimensions } from "react-native";
 import { GameEngine } from "react-native-game-engine";
 import Matter from "matter-js";
 import { Bow, Target, DebugInfo } from "./engine/renderers";
-import { Physics, KnockArrow } from "./engine/systems";
+import { Physics, KnockArrow, FollowPaths } from "./engine/systems";
 import {
   GAME_WIDTH,
   GAME_HEIGHT,
@@ -25,7 +25,8 @@ export default function Game() {
   world.bounds.min = { x: 0, y: 0 };
   world.bounds.max = { x: GAME_WIDTH, y: GAME_HEIGHT };
 
-  let target = Matter.Bodies.circle(GAME_WIDTH - 100, GAME_HEIGHT / 2, 50);
+  let target = Matter.Bodies.circle(GAME_WIDTH - 100, 5, 50);
+  target.frictionAir = 0;
   target.label = "target";
 
   Matter.World.add(world, target);
@@ -42,14 +43,25 @@ export default function Game() {
       position: { x: BOW_ANCHOR_X, y: BOW_ANCHOR_Y },
       renderer: Bow,
     },
-    target: { body: target, renderer: Target },
+    target: {
+      body: target,
+      movePath: {
+        index: 0,
+        speed: 4,
+        waypoints: [
+          { ...target.position },
+          { x: target.position.x, y: GAME_HEIGHT - 5 },
+        ],
+      },
+      renderer: Target,
+    },
     debug: { showDebug: DEBUG, renderer: DebugInfo },
   };
 
   return (
     <GameEngine
       style={styles.container}
-      systems={[KnockArrow, Physics]}
+      systems={[KnockArrow, FollowPaths, Physics]}
       entities={entities}
     >
       <StatusBar hidden={true} />

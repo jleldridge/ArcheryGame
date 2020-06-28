@@ -6,22 +6,19 @@ import {
   getBowRotation,
   getBowDrawDistance,
   getArrowForceVector,
+  distance,
 } from "./util";
 import { GameEntities } from "../types";
 
 export const Physics = (
   entities: GameEntities,
   loop: GameEngineUpdateEventOptionType
-) => {
-  let {
-    engine,
-    world,
-  }: { engine: Matter.Engine; world: Matter.World } = entities.physics;
+): GameEntities => {
+  let { engine, world } = entities.physics;
   const { time } = loop;
   Matter.Engine.update(engine, time.delta);
 
   let bodiesToRemove: Matter.Body[] = [];
-
   // remove entities with bodies that have been removed from the physics engine
   Object.values<any>(entities)
     .filter((v) => v.body)
@@ -44,7 +41,7 @@ export const Physics = (
 export const KnockArrow = (
   entities: GameEntities,
   loop: GameEngineUpdateEventOptionType
-) => {
+): GameEntities => {
   const { touches } = loop;
   let bow = entities["bow"];
 
@@ -94,6 +91,32 @@ export const KnockArrow = (
       entities.debug.touchDown = bow.downPoint;
     }
   }
+
+  return entities;
+};
+
+export const FollowPaths = (
+  entities: GameEntities,
+  loop: GameEngineUpdateEventOptionType
+): GameEntities => {
+  Object.values(entities)
+    .filter((v) => v.movePath && v.body)
+    .forEach((v) => {
+      const distanceToWaypoint = distance(
+        v.body.position,
+        v.movePath.waypoints[v.movePath.index]
+      );
+      if (distanceToWaypoint < v.movePath.speed) {
+        v.movePath.index = (v.movePath.index + 1) % v.movePath.waypoints.length;
+        const waypoint = v.movePath.waypoints[v.movePath.index];
+        const angle = Matter.Vector.angle(v.body.position, waypoint);
+        const vector = {
+          x: Math.cos(angle) * v.movePath.speed,
+          y: Math.sin(angle) * v.movePath.speed,
+        };
+        Matter.Body.setVelocity(v.body, vector);
+      }
+    });
 
   return entities;
 };

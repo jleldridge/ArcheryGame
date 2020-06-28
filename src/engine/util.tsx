@@ -21,12 +21,7 @@ export function getBowDrawDistance(downPoint: Point, dragPoint: Point): number {
   if (dragPoint.x - downPoint.x > 0) {
     return 0;
   }
-  let drawDistance =
-    -1 *
-    Math.sqrt(
-      Math.pow(dragPoint.x - downPoint.x, 2) +
-        Math.pow(dragPoint.y - downPoint.y, 2)
-    );
+  let drawDistance = -1 * distance(dragPoint, downPoint);
   drawDistance = Math.max(drawDistance, -1 * constants.MAX_ARROW_PULL_DISTANCE);
 
   return drawDistance;
@@ -99,4 +94,10 @@ export function getGameOffsetY(): number {
 
 export function getScreenOrientation(): ScreenOrientation {
   return getScreenHeight() > getScreenWidth() ? "portrait" : "landscape";
+}
+
+export function distance(point1: Point, point2: Point): number {
+  return Math.sqrt(
+    Math.pow(point1.x - point2.x, 2) + Math.pow(point1.y - point2.y, 2)
+  );
 }
