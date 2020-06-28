@@ -1,5 +1,11 @@
 import Matter from "matter-js";
 
+export type RootState = {
+  currentScene: Scene;
+};
+
+export type Scene = {};
+
 export type GameEntities = {
   entitySuffix: number;
   physics: Physics;

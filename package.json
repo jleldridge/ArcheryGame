@@ -10,6 +10,8 @@
   "dependencies": {
     "@react-native-community/hooks": "^2.6.0",
     "@types/matter-js": "^0.14.4",
+    "@types/react-redux": "^7.1.9",
+    "@types/redux": "^3.6.0",
     "expo": "~37.0.3",
     "matter-js": "^0.14.2",
     "react": "~16.9.0",
@@ -17,7 +19,9 @@
     "react-native": "https://github.com/expo/react-native/archive/sdk-37.0.1.tar.gz",
     "react-native-game-engine": "^1.2.0",
     "react-native-screens": "~2.2.0",
-    "react-native-web": "~0.11.7"
+    "react-native-web": "~0.11.7",
+    "react-redux": "^7.2.0",
+    "redux": "^4.0.5"
   },
   "devDependencies": {
     "@babel/core": "^7.8.6",

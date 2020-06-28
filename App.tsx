@@ -1,37 +1,41 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
+import { Provider } from "react-redux";
 import { useDimensions } from "@react-native-community/hooks";
+import store from "./src/redux/store";
 import { GAME_WIDTH, GAME_HEIGHT } from "./src/constants";
 import Game from "./src/Game";
-import {
-  getScreenWidth,
-  getScreenHeight,
-  getGameScale,
-  getScreenOrientation,
-} from "./src/engine/util";
+import { getGameScale, getScreenOrientation } from "./src/engine/util";
 
 export default function App() {
   const screenOrientation = getScreenOrientation();
   const screen = useDimensions().screen;
 
   return (
-    <View
-      style={[styles.container, { width: screen.width, height: screen.height }]}
-    >
+    <Provider store={store}>
       <View
         style={[
-          styles.sceneContainer,
-          {
-            transform: [
-              { rotateZ: screenOrientation === "portrait" ? "-90deg" : "0deg" },
-              { scale: getGameScale() },
-            ],
-          },
+          styles.container,
+          { width: screen.width, height: screen.height },
         ]}
       >
-        <Game />
+        <View
+          style={[
+            styles.sceneContainer,
+            {
+              transform: [
+                {
+                  rotateZ: screenOrientation === "portrait" ? "-90deg" : "0deg",
+                },
+                { scale: getGameScale() },
+              ],
+            },
+          ]}
+        >
+          <Game />
+        </View>
       </View>
-    </View>
+    </Provider>
   );
 }
 
