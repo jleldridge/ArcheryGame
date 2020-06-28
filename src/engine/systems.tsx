@@ -23,6 +23,14 @@ export const Physics = (
   Object.values<any>(entities)
     .filter((v) => v.body)
     .forEach((v) => {
+      // move static bodies that have velocity
+      if (v.body.isStatic) {
+        Matter.Body.setPosition(v.body, {
+          x: v.body.position.x + v.body.velocity.x,
+          y: v.body.position.y + v.body.velocity.y,
+        });
+      }
+
       if (
         !Matter.Bounds.overlaps(world.bounds, v.body.bounds) ||
         !Matter.Composite.get(world, v.body.id, v.body.type)

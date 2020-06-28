@@ -54,6 +54,19 @@ export default function Game() {
     }
   );
 
+  factory.obstacle(
+    entities,
+    { x: GAME_WIDTH - 200, y: GAME_HEIGHT / 2 },
+    {
+      index: 0,
+      speed: 1,
+      waypoints: [
+        { x: GAME_WIDTH - 200, y: GAME_HEIGHT / 2 },
+        { x: GAME_WIDTH - 200, y: 5 },
+      ],
+    }
+  );
+
   return (
     <GameEngine
       style={styles.container}

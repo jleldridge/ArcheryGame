@@ -1,5 +1,5 @@
 import Matter from "matter-js";
-import { Arrow, Target } from "./renderers";
+import { Arrow, Target, Obstacle } from "./renderers";
 import { CollidableObject, MovePath, GameEntities, Point } from "../types";
 
 export function arrow(entities: GameEntities): CollidableObject {
@@ -42,6 +42,28 @@ export function target(
   };
 
   return entities[targetBody.label];
+}
+
+export function obstacle(
+  entities: GameEntities,
+  position: Point,
+  movePath?: MovePath
+): CollidableObject {
+  const { physics } = entities;
+
+  let obstacleBody = Matter.Bodies.rectangle(position.x, position.y, 10, 70);
+  obstacleBody.label = `obstacle${entities.entitySuffix++}`;
+  obstacleBody.frictionAir = 0;
+  Matter.Body.setStatic(obstacleBody, true);
+  Matter.World.add(physics.world, obstacleBody);
+
+  entities[obstacleBody.label] = {
+    body: obstacleBody,
+    movePath,
+    renderer: Obstacle,
+  };
+
+  return entities[obstacleBody.label];
 }
 
 export function destroy(entities: any, body: Matter.Body) {

@@ -7,6 +7,7 @@ import {
   BOW_ANCHOR_X,
   BOW_ANCHOR_Y,
 } from "../constants";
+import { Point } from "../types";
 
 type ArrowProps = {
   body: Matter.Body;
@@ -20,6 +21,10 @@ type BowProps = {
 };
 
 type TargetProps = {
+  body: Matter.Body;
+};
+
+type ObstacleProps = {
   body: Matter.Body;
 };
 
@@ -84,14 +89,35 @@ export function Bow(props: BowProps) {
 }
 
 export function Target(props: TargetProps) {
-  // x and y are at the center of the image
-  let x = props.body.position.x - 50;
-  let y = props.body.position.y - 50;
+  let position = getAdjustedPosition(props.body.position, 100, 100);
 
   return (
     <Image
       source={require("../../assets/Target.png")}
-      style={[styles.target, { left: x, top: y }]}
+      style={[styles.target, { left: position.x, top: position.y }]}
+    />
+  );
+}
+
+export function Obstacle(props: ObstacleProps) {
+  const width = 10;
+  const height = 70;
+  const position = getAdjustedPosition(props.body.position, width, height);
+
+  return (
+    <View
+      style={{
+        position: "absolute",
+        width,
+        height,
+        left: position.x,
+        top: position.y,
+        backgroundColor: "red",
+        transform: [
+          { rotateZ: `${props.body.angle}rad` },
+          { perspective: 500 },
+        ],
+      }}
     />
   );
 }
@@ -147,6 +173,14 @@ export function DebugInfo(props: DebugProps) {
       )}
     </View>
   );
+}
+
+function getAdjustedPosition(
+  position: Point,
+  width: number,
+  height: number
+): Point {
+  return { x: position.x - width / 2, y: position.y - height / 2 };
 }
 
 const styles = StyleSheet.create({
