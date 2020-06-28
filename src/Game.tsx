@@ -2,7 +2,7 @@ import React from "react";
 import { StyleSheet, StatusBar, Dimensions } from "react-native";
 import { GameEngine } from "react-native-game-engine";
 import Matter from "matter-js";
-import { Bow, DebugInfo } from "./engine/renderers";
+import { Bow, DebugInfo, Arrows, Targets, Obstacles } from "./engine/renderers";
 import * as factory from "./engine/factory";
 import { Physics, KnockArrow, FollowPaths } from "./engine/systems";
 import {
@@ -27,7 +27,6 @@ export default function Game() {
   world.bounds.max = { x: GAME_WIDTH, y: GAME_HEIGHT };
 
   let entities: GameEntities = {
-    entitySuffix: 0,
     physics: { engine, world },
     bow: {
       touched: false,
@@ -38,6 +37,9 @@ export default function Game() {
       position: { x: BOW_ANCHOR_X, y: BOW_ANCHOR_Y },
       renderer: Bow,
     },
+    arrows: { renderer: Arrows, items: [] },
+    targets: { renderer: Targets, items: [] },
+    obstacles: { renderer: Obstacles, items: [] },
     debug: { showDebug: DEBUG, renderer: DebugInfo },
   };
 

@@ -6,16 +6,18 @@ export function attachMatterEvents(engine: Matter.Engine) {
     "collisionStart",
     (e: Matter.IEventCollision<Matter.Body>) => {
       e.pairs.forEach((pair) => {
-        let arrow = pair.bodyA.label.startsWith("arrow")
-          ? pair.bodyA
-          : pair.bodyB.label.startsWith("arrow")
-          ? pair.bodyB
-          : undefined;
-        let target = pair.bodyA.label.startsWith("target")
-          ? pair.bodyA
-          : pair.bodyB.label.startsWith("target")
-          ? pair.bodyB
-          : undefined;
+        let arrow =
+          pair.bodyA.label === "arrows"
+            ? pair.bodyA
+            : pair.bodyB.label === "arrows"
+            ? pair.bodyB
+            : undefined;
+        let target =
+          pair.bodyA.label === "targets"
+            ? pair.bodyA
+            : pair.bodyB.label === "targets"
+            ? pair.bodyB
+            : undefined;
         if (arrow && target) {
           // mark target for removal
           Matter.World.remove(engine.world, target);

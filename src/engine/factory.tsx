@@ -1,8 +1,7 @@
 import Matter from "matter-js";
-import { Arrow, Target, Obstacle } from "./renderers";
-import { CollidableObject, MovePath, GameEntities, Point } from "../types";
+import { CollidableEntity, MovePath, GameEntities, Point } from "../types";
 
-export function arrow(entities: GameEntities): CollidableObject {
+export function arrow(entities: GameEntities): CollidableEntity {
   const { bow, physics } = entities;
 
   let arrowBody = Matter.Bodies.rectangle(
@@ -11,63 +10,67 @@ export function arrow(entities: GameEntities): CollidableObject {
     200,
     40
   );
-  arrowBody.label = `arrow${entities.entitySuffix++}`;
+  arrowBody.label = `arrows`;
   arrowBody.frictionAir = 0;
   Matter.World.add(physics.world, arrowBody);
 
-  entities[arrowBody.label] = {
+  const arrow = {
     body: arrowBody,
-    renderer: Arrow,
   };
+  entities.arrows.items.push(arrow);
 
-  return entities[arrowBody.label];
+  return arrow;
 }
 
 export function target(
   entities: GameEntities,
   position: Point,
   movePath?: MovePath
-): CollidableObject {
+): CollidableEntity {
   const { physics } = entities;
 
   let targetBody = Matter.Bodies.circle(position.x, position.y, 50);
-  targetBody.label = `target${entities.entitySuffix++}`;
+  targetBody.label = `targets`;
   targetBody.frictionAir = 0;
   Matter.World.add(physics.world, targetBody);
 
-  entities[targetBody.label] = {
+  const target = {
     body: targetBody,
     movePath: movePath,
-    renderer: Target,
   };
+  entities.targets.items.push(target);
 
-  return entities[targetBody.label];
+  return target;
 }
 
 export function obstacle(
   entities: GameEntities,
   position: Point,
   movePath?: MovePath
-): CollidableObject {
+): CollidableEntity {
   const { physics } = entities;
 
   let obstacleBody = Matter.Bodies.rectangle(position.x, position.y, 10, 70);
-  obstacleBody.label = `obstacle${entities.entitySuffix++}`;
+  obstacleBody.label = `obstacles`;
   obstacleBody.frictionAir = 0;
   Matter.Body.setStatic(obstacleBody, true);
   Matter.World.add(physics.world, obstacleBody);
 
-  entities[obstacleBody.label] = {
+  const obstacle = {
     body: obstacleBody,
     movePath,
-    renderer: Obstacle,
   };
+  entities.obstacles.items.push(obstacle);
 
-  return entities[obstacleBody.label];
+  return obstacle;
 }
 
-export function destroy(entities: any, body: Matter.Body) {
+export function destroy(entities: any, obj: CollidableEntity) {
   const world = entities.physics.world;
-  Matter.World.remove(world, body);
-  delete entities[body.label];
+  Matter.World.remove(world, obj.body);
+  // this really needs to be made more efficient
+  entities[obj.body.label].items.splice(
+    entities[obj.body.label].items.indexOf(obj),
+    1
+  );
 }

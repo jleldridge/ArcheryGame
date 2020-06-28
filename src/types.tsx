@@ -7,8 +7,14 @@ export type RootState = {
 export type Scene = {};
 
 export type GameEntities = {
-  [id: string]: any;
+  physics: Physics;
+  bow: Bow;
+  arrows: CollidableEntityCollection;
+  targets: CollidableEntityCollection;
+  obstacles: CollidableEntityCollection;
+  debug: Debug;
 };
+
 export type Physics = {
   engine: Matter.Engine;
   world: Matter.World;
@@ -24,10 +30,15 @@ export type Bow = {
   renderer: any;
 };
 
-export type CollidableObject = {
+export type CollidableEntityCollection = {
+  renderer: any;
+  items: CollidableEntity[];
+};
+
+export type CollidableEntity = {
   body: Matter.Body;
   movePath?: MovePath;
-  renderer: any;
+  // renderer: any; // Maybe I could use this at some point to differentiate entities of different types.
 };
 
 export type MovePath = {
@@ -42,3 +53,10 @@ export type Point = {
 };
 
 export type ScreenOrientation = "portrait" | "landscape";
+
+export type Debug = {
+  showDebug: boolean;
+  renderer: any;
+  touchDown?: Point;
+  dragPoint?: Point;
+};

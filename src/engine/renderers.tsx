@@ -7,10 +7,10 @@ import {
   BOW_ANCHOR_X,
   BOW_ANCHOR_Y,
 } from "../constants";
-import { Point } from "../types";
+import { Point, CollidableEntity } from "../types";
 
-type ArrowProps = {
-  body: Matter.Body;
+type CollidableEntityCollectionProps = {
+  items: CollidableEntity[];
 };
 
 type BowProps = {
@@ -18,14 +18,6 @@ type BowProps = {
   rotation: number;
   drawDistance: number;
   arrowVisible: boolean;
-};
-
-type TargetProps = {
-  body: Matter.Body;
-};
-
-type ObstacleProps = {
-  body: Matter.Body;
 };
 
 type DebugProps = {
@@ -36,89 +28,73 @@ type DebugProps = {
   angle: number;
 };
 
-export function Arrow(props: ArrowProps) {
-  let x = props.body.position.x - 100;
-  let y = props.body.position.y - 20;
-
+export function Arrows(props: CollidableEntityCollectionProps) {
   return (
-    <Image
-      source={require("../../assets/Arrow.png")}
-      style={[
-        styles.arrow,
-        { left: x, top: y, transform: [{ rotateZ: `${props.body.angle}rad` }] },
-      ]}
-    />
+    <>
+      {props.items.map((obj, index) => {
+        let position = getAdjustedPosition(obj.body.position, 200, 40);
+        return (
+          <Image
+            key={`arrows-${index}`}
+            source={require("../../assets/Arrow.png")}
+            style={[
+              styles.arrow,
+              {
+                left: position.x,
+                top: position.y,
+                transform: [{ rotateZ: `${obj.body.angle}rad` }],
+              },
+            ]}
+          />
+        );
+      })}
+    </>
   );
 }
 
-export function Bow(props: BowProps) {
+export function Targets(props: CollidableEntityCollectionProps) {
   return (
-    <View
-      style={[
-        {
-          position: "absolute",
-          left: props.position.x,
-          top: props.position.y,
-          transform: [
-            { rotateZ: `${props.rotation}rad` },
-            { perspective: 500 },
-          ],
-        },
-      ]}
-    >
-      <Image
-        source={require("../../assets/Bow.png")}
-        style={[styles.bow, { top: -100, left: -52.5 }]}
-      />
-      {props.arrowVisible ? (
-        <Image
-          source={require("../../assets/Arrow.png")}
-          style={[
-            styles.arrow,
-            {
-              left: props.drawDistance - 100,
-              top: -20,
-            },
-          ]}
-        />
-      ) : (
-        <></>
-      )}
-    </View>
+    <>
+      {props.items.map((obj, index) => {
+        let position = getAdjustedPosition(obj.body.position, 100, 100);
+        return (
+          <Image
+            key={`targets-${index}`}
+            source={require("../../assets/Target.png")}
+            style={[styles.target, { left: position.x, top: position.y }]}
+          />
+        );
+      })}
+    </>
   );
 }
 
-export function Target(props: TargetProps) {
-  let position = getAdjustedPosition(props.body.position, 100, 100);
-
+export function Obstacles(props: CollidableEntityCollectionProps) {
   return (
-    <Image
-      source={require("../../assets/Target.png")}
-      style={[styles.target, { left: position.x, top: position.y }]}
-    />
-  );
-}
-
-export function Obstacle(props: ObstacleProps) {
-  const width = 10;
-  const height = 70;
-  const position = getAdjustedPosition(props.body.position, width, height);
-
-  return (
-    <View
-      style={{
-        position: "absolute",
-        width,
-        height,
-        left: position.x,
-        top: position.y,
-        backgroundColor: "red",
-        transform: [
-          { rotateZ: `${props.body.angle}rad` },
-          { perspective: 500 },
-        ],
-      }}
-    />
+    <>
+      {props.items.map((obj, index) => {
+        const width = 10;
+        const height = 70;
+        const position = getAdjustedPosition(obj.body.position, 10, 70);
+        return (
+          <View
+            key={`obstacles-${index}`}
+            style={{
+              position: "absolute",
+              width,
+              height,
+              left: position.x,
+              top: position.y,
+              backgroundColor: "red",
+              transform: [
+                { rotateZ: `${obj.body.angle}rad` },
+                { perspective: 500 },
+              ],
+            }}
+          />
+        );
+      })}
+    </>
   );
 }
 
@@ -165,6 +141,43 @@ export function DebugInfo(props: DebugProps) {
               position: "absolute",
               left: props.dragPoint.x - 5,
               top: props.dragPoint.y - 5,
+            },
+          ]}
+        />
+      ) : (
+        <></>
+      )}
+    </View>
+  );
+}
+
+export function Bow(props: BowProps) {
+  return (
+    <View
+      style={[
+        {
+          position: "absolute",
+          left: props.position.x,
+          top: props.position.y,
+          transform: [
+            { rotateZ: `${props.rotation}rad` },
+            { perspective: 500 },
+          ],
+        },
+      ]}
+    >
+      <Image
+        source={require("../../assets/Bow.png")}
+        style={[styles.bow, { top: -100, left: -52.5 }]}
+      />
+      {props.arrowVisible ? (
+        <Image
+          source={require("../../assets/Arrow.png")}
+          style={[
+            styles.arrow,
+            {
+              left: props.drawDistance - 100,
+              top: -20,
             },
           ]}
         />

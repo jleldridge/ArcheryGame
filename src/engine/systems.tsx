@@ -8,7 +8,7 @@ import {
   getArrowForceVector,
   distance,
 } from "./util";
-import { GameEntities } from "../types";
+import { GameEntities, CollidableEntity } from "../types";
 
 export const Physics = (
   entities: GameEntities,
@@ -18,29 +18,20 @@ export const Physics = (
   const { time } = loop;
   Matter.Engine.update(engine, time.delta);
 
-  let bodiesToRemove: Matter.Body[] = [];
-  // remove entities with bodies that have been removed from the physics engine
-  Object.values<any>(entities)
-    .filter((v) => v.body)
-    .forEach((v) => {
-      // move static bodies that have velocity
-      if (v.body.isStatic) {
-        Matter.Body.setPosition(v.body, {
-          x: v.body.position.x + v.body.velocity.x,
-          y: v.body.position.y + v.body.velocity.y,
-        });
-      }
+  let bodiesToRemove: CollidableEntity[] = [];
 
-      if (
-        !Matter.Bounds.overlaps(world.bounds, v.body.bounds) ||
-        !Matter.Composite.get(world, v.body.id, v.body.type)
-      ) {
-        bodiesToRemove.push(v.body);
-      }
-    });
+  entities.arrows.items.forEach((obj) =>
+    postUpdatePhysics(obj, bodiesToRemove, world)
+  );
+  entities.targets.items.forEach((obj) => {
+    postUpdatePhysics(obj, bodiesToRemove, world);
+  });
+  entities.obstacles.items.forEach((obj) => {
+    postUpdatePhysics(obj, bodiesToRemove, world);
+  });
 
-  bodiesToRemove.forEach((body) => {
-    factory.destroy(entities, body);
+  bodiesToRemove.forEach((obj) => {
+    factory.destroy(entities, obj);
   });
 
   return entities;
@@ -107,24 +98,48 @@ export const FollowPaths = (
   entities: GameEntities,
   loop: GameEngineUpdateEventOptionType
 ): GameEntities => {
-  Object.values(entities)
-    .filter((v) => v.movePath && v.body)
-    .forEach((v) => {
-      const distanceToWaypoint = distance(
-        v.body.position,
-        v.movePath.waypoints[v.movePath.index]
-      );
-      if (distanceToWaypoint < v.movePath.speed) {
-        v.movePath.index = (v.movePath.index + 1) % v.movePath.waypoints.length;
-        const waypoint = v.movePath.waypoints[v.movePath.index];
-        const angle = Matter.Vector.angle(v.body.position, waypoint);
-        const vector = {
-          x: Math.cos(angle) * v.movePath.speed,
-          y: Math.sin(angle) * v.movePath.speed,
-        };
-        Matter.Body.setVelocity(v.body, vector);
-      }
-    });
-
+  entities.targets.items.forEach(moveToWaypoint);
+  entities.obstacles.items.forEach(moveToWaypoint);
   return entities;
 };
+
+function postUpdatePhysics(
+  obj: CollidableEntity,
+  bodiesToRemove: CollidableEntity[],
+  world: Matter.World
+) {
+  // move static bodies that have velocity
+  if (obj.body.isStatic) {
+    Matter.Body.setPosition(obj.body, {
+      x: obj.body.position.x + obj.body.velocity.x,
+      y: obj.body.position.y + obj.body.velocity.y,
+    });
+  }
+
+  // remove entities with bodies that have been removed from the physics engine
+  if (
+    !Matter.Bounds.overlaps(world.bounds, obj.body.bounds) ||
+    !Matter.Composite.get(world, obj.body.id, obj.body.type)
+  ) {
+    bodiesToRemove.push(obj);
+  }
+}
+
+function moveToWaypoint(obj: CollidableEntity) {
+  if (!obj.movePath) return;
+  const distanceToWaypoint = distance(
+    obj.body.position,
+    obj.movePath.waypoints[obj.movePath.index]
+  );
+  if (distanceToWaypoint < obj.movePath.speed) {
+    obj.movePath.index =
+      (obj.movePath.index + 1) % obj.movePath.waypoints.length;
+    const waypoint = obj.movePath.waypoints[obj.movePath.index];
+    const angle = Matter.Vector.angle(obj.body.position, waypoint);
+    const vector = {
+      x: Math.cos(angle) * obj.movePath.speed,
+      y: Math.sin(angle) * obj.movePath.speed,
+    };
+    Matter.Body.setVelocity(obj.body, vector);
+  }
+}
