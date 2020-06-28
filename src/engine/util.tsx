@@ -18,6 +18,7 @@ export function toGameCoordinates(screenCoordinates: Point): Point {
 }
 
 export function getBowDrawDistance(downPoint: Point, dragPoint: Point): number {
+  // we must be pulling backwards, this is a bow after all
   if (dragPoint.x - downPoint.x > 0) {
     return 0;
   }

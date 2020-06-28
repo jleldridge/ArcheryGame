@@ -2,7 +2,8 @@ import React from "react";
 import { StyleSheet, StatusBar, Dimensions } from "react-native";
 import { GameEngine } from "react-native-game-engine";
 import Matter from "matter-js";
-import { Bow, Target, DebugInfo } from "./engine/renderers";
+import { Bow, DebugInfo } from "./engine/renderers";
+import * as factory from "./engine/factory";
 import { Physics, KnockArrow, FollowPaths } from "./engine/systems";
 import {
   GAME_WIDTH,
@@ -25,12 +26,6 @@ export default function Game() {
   world.bounds.min = { x: 0, y: 0 };
   world.bounds.max = { x: GAME_WIDTH, y: GAME_HEIGHT };
 
-  let target = Matter.Bodies.circle(GAME_WIDTH - 100, 5, 50);
-  target.frictionAir = 0;
-  target.label = "target";
-
-  Matter.World.add(world, target);
-
   let entities: GameEntities = {
     entitySuffix: 0,
     physics: { engine, world },
@@ -43,20 +38,21 @@ export default function Game() {
       position: { x: BOW_ANCHOR_X, y: BOW_ANCHOR_Y },
       renderer: Bow,
     },
-    target: {
-      body: target,
-      movePath: {
-        index: 0,
-        speed: 4,
-        waypoints: [
-          { ...target.position },
-          { x: target.position.x, y: GAME_HEIGHT - 5 },
-        ],
-      },
-      renderer: Target,
-    },
     debug: { showDebug: DEBUG, renderer: DebugInfo },
   };
+
+  factory.target(
+    entities,
+    { x: GAME_WIDTH - 100, y: 5 },
+    {
+      index: 0,
+      speed: 4,
+      waypoints: [
+        { x: GAME_WIDTH - 100, y: 5 },
+        { x: GAME_WIDTH - 100, y: GAME_HEIGHT - 5 },
+      ],
+    }
+  );
 
   return (
     <GameEngine

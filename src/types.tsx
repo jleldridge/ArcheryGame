@@ -7,13 +7,8 @@ export type RootState = {
 export type Scene = {};
 
 export type GameEntities = {
-  entitySuffix: number;
-  physics: Physics;
-  bow: Bow;
-  target: Target;
-  debug: any;
+  [id: string]: any;
 };
-
 export type Physics = {
   engine: Matter.Engine;
   world: Matter.World;
@@ -29,9 +24,9 @@ export type Bow = {
   renderer: any;
 };
 
-export type Target = {
+export type CollidableObject = {
   body: Matter.Body;
-  movePath: MovePath;
+  movePath?: MovePath;
   renderer: any;
 };
 

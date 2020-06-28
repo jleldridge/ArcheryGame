@@ -10,7 +10,6 @@ import {
 
 type ArrowProps = {
   body: Matter.Body;
-  visible: boolean;
 };
 
 type BowProps = {
@@ -36,7 +35,7 @@ export function Arrow(props: ArrowProps) {
   let x = props.body.position.x - 100;
   let y = props.body.position.y - 20;
 
-  return props.visible ? (
+  return (
     <Image
       source={require("../../assets/Arrow.png")}
       style={[
@@ -44,8 +43,6 @@ export function Arrow(props: ArrowProps) {
         { left: x, top: y, transform: [{ rotateZ: `${props.body.angle}rad` }] },
       ]}
     />
-  ) : (
-    <></>
   );
 }
 

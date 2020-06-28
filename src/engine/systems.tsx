@@ -52,11 +52,11 @@ export const KnockArrow = (
 
       if (bow.drawDistance < 0) {
         let arrow = factory.arrow(entities);
-        Matter.Body.rotate(arrow, bow.rotation);
+        Matter.Body.rotate(arrow.body, bow.rotation);
 
         Matter.Body.applyForce(
-          arrow,
-          arrow.position,
+          arrow.body,
+          arrow.body.position,
           getArrowForceVector(bow.drawDistance, bow.rotation)
         );
       }
