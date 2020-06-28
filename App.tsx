@@ -9,14 +9,14 @@ import { getGameScale, getScreenOrientation } from "./src/engine/util";
 
 export default function App() {
   const screenOrientation = getScreenOrientation();
-  const screen = useDimensions().screen;
+  const window = useDimensions().window;
 
   return (
     <Provider store={store}>
       <View
         style={[
           styles.container,
-          { width: screen.width, height: screen.height },
+          { width: window.width, height: window.height },
         ]}
       >
         <View
