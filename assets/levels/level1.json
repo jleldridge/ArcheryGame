@@ -1,0 +1,29 @@
+{
+  "targets": [
+    {
+      "position": { "x": 924, "y": 10 },
+      "movePath": {
+        "index": 0,
+        "speed": 5,
+        "waypoints": [
+          { "x": 924, "y": 10 },
+          { "x": 924, "y": 500 }
+        ]
+      }
+    }
+  ],
+
+  "obstacles": [
+    {
+      "position": { "x": 824, "y": 10 },
+      "movePath": {
+        "index": 0,
+        "speed": 1,
+        "waypoints": [
+          { "x": 824, "y": 10 },
+          { "x": 824, "y": 500 }
+        ]
+      }
+    }
+  ]
+}

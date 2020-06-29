@@ -9,6 +9,9 @@ import {
   distance,
 } from "./util";
 import { GameEntities, CollidableEntity } from "../types";
+import store from "../redux/store";
+import { setCurrentLevelIndex, setGameRunning } from "../redux/actions";
+const levelIndex = require("../../assets/levels/levelIndex.json");
 
 export const Physics = (
   entities: GameEntities,
@@ -100,6 +103,32 @@ export const FollowPaths = (
 ): GameEntities => {
   entities.targets.items.forEach(moveToWaypoint);
   entities.obstacles.items.forEach(moveToWaypoint);
+  return entities;
+};
+
+export const EvaluateObjectives = (
+  entities: GameEntities,
+  loop: GameEngineUpdateEventOptionType
+): GameEntities => {
+  if (entities.targets.items.length <= 0) {
+    factory.clear(entities);
+    // load next level
+    // const levelIndex = store.getState().currentLevelIndex;
+    store.dispatch(
+      setCurrentLevelIndex(store.getState().currentLevelIndex + 1)
+    );
+    const state = store.getState();
+    const currentLevel = require(`../../assets/levels/${
+      levelIndex["levels"][state.currentLevelIndex]
+    }`);
+
+    for (let obstacle of currentLevel.obstacles) {
+      factory.obstacle(entities, obstacle.position, obstacle.movePath);
+    }
+    for (let target of currentLevel.targets) {
+      factory.target(entities, target.position, target.movePath);
+    }
+  }
   return entities;
 };
 

@@ -74,3 +74,15 @@ export function destroy(entities: any, obj: CollidableEntity) {
     1
   );
 }
+
+export function clear(entities: GameEntities) {
+  for (let obj of entities.arrows.items) {
+    destroy(entities, obj);
+  }
+  for (let obj of entities.targets.items) {
+    destroy(entities, obj);
+  }
+  for (let obj of entities.obstacles.items) {
+    destroy(entities, obj);
+  }
+}

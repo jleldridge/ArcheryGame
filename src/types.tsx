@@ -1,10 +1,19 @@
 import Matter from "matter-js";
 
 export type RootState = {
-  currentScene: Scene;
+  currentLevelIndex: number;
+  gameRunning: boolean;
 };
 
-export type Scene = {};
+export type Level = {
+  obstacles: Model[];
+  targets: Model[];
+};
+
+export interface Model {
+  position: Point;
+  movePath?: MovePath;
+}
 
 export type GameEntities = {
   physics: Physics;

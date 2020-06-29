@@ -1,10 +1,16 @@
 import React from "react";
-import { StyleSheet, StatusBar, Dimensions } from "react-native";
+import { StyleSheet, StatusBar } from "react-native";
+import { useSelector } from "react-redux";
 import { GameEngine } from "react-native-game-engine";
 import Matter from "matter-js";
 import { Bow, DebugInfo, Arrows, Targets, Obstacles } from "./engine/renderers";
 import * as factory from "./engine/factory";
-import { Physics, KnockArrow, FollowPaths } from "./engine/systems";
+import {
+  Physics,
+  KnockArrow,
+  FollowPaths,
+  EvaluateObjectives,
+} from "./engine/systems";
 import {
   GAME_WIDTH,
   GAME_HEIGHT,
@@ -12,12 +18,15 @@ import {
   BOW_ANCHOR_Y,
 } from "./constants";
 import { attachMatterEvents } from "./engine/events";
-import { GameEntities } from "./types";
+import { GameEntities, RootState } from "./types";
 
 const DEBUG = false;
 
 export default function Game() {
   console.log("Rendering Game...");
+
+  const running = useSelector((state: RootState) => state.gameRunning);
+
   let engine = Matter.Engine.create({ enableSleeping: false });
   let world = engine.world;
   attachMatterEvents(engine);
@@ -43,37 +52,12 @@ export default function Game() {
     debug: { showDebug: DEBUG, renderer: DebugInfo },
   };
 
-  factory.target(
-    entities,
-    { x: GAME_WIDTH - 100, y: 5 },
-    {
-      index: 0,
-      speed: 4,
-      waypoints: [
-        { x: GAME_WIDTH - 100, y: 5 },
-        { x: GAME_WIDTH - 100, y: GAME_HEIGHT - 5 },
-      ],
-    }
-  );
-
-  factory.obstacle(
-    entities,
-    { x: GAME_WIDTH - 200, y: GAME_HEIGHT / 2 },
-    {
-      index: 0,
-      speed: 1,
-      waypoints: [
-        { x: GAME_WIDTH - 200, y: GAME_HEIGHT / 2 },
-        { x: GAME_WIDTH - 200, y: 5 },
-      ],
-    }
-  );
-
   return (
     <GameEngine
       style={styles.container}
-      systems={[KnockArrow, FollowPaths, Physics]}
+      systems={[KnockArrow, FollowPaths, Physics, EvaluateObjectives]}
       entities={entities}
+      running={running}
     >
       <StatusBar hidden={true} />
     </GameEngine>
