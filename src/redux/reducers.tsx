@@ -11,7 +11,6 @@ export default function reduce(state: RootState = EMPTY_STATE, action: any) {
     case "SET_GAME_RUNNING":
       return { ...state, gameRunning: action.running };
     case "SET_CURRENT_LEVEL_INDEX":
-      console.log("setting current level to", action.level);
       return {
         ...state,
         currentLevelIndex: action.level % levelIndex.levels.length,

@@ -163,12 +163,12 @@ function moveToWaypoint(obj: CollidableEntity) {
   if (distanceToWaypoint < obj.movePath.speed) {
     obj.movePath.index =
       (obj.movePath.index + 1) % obj.movePath.waypoints.length;
-    const waypoint = obj.movePath.waypoints[obj.movePath.index];
-    const angle = Matter.Vector.angle(obj.body.position, waypoint);
-    const vector = {
-      x: Math.cos(angle) * obj.movePath.speed,
-      y: Math.sin(angle) * obj.movePath.speed,
-    };
-    Matter.Body.setVelocity(obj.body, vector);
   }
+  const waypoint = obj.movePath.waypoints[obj.movePath.index];
+  const angle = Matter.Vector.angle(obj.body.position, waypoint);
+  const vector = {
+    x: Math.cos(angle) * obj.movePath.speed,
+    y: Math.sin(angle) * obj.movePath.speed,
+  };
+  Matter.Body.setVelocity(obj.body, vector);
 }
